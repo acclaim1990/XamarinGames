@@ -1,6 +1,4 @@
-﻿using System;
-using Xamarin.Forms;
-using Xamarin.Forms.Xaml;
+﻿using Xamarin.Forms;
 using XamarinGames.Services;
 using XamarinGames.Views;
 
@@ -14,7 +12,7 @@ namespace XamarinGames
             InitializeComponent();
 
             DependencyService.Register<MockDataStore>();
-            MainPage = new AppShell();
+            MainPage = new GyroBallPage();
         }
 
         protected override void OnStart()

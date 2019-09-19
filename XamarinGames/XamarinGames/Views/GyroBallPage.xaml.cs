@@ -19,7 +19,7 @@ namespace XamarinGames.Views
         public GyroBallPage()
         {
             InitializeComponent();
-            engine = new GyroBallEngine(new Vector2((float)canvasView.CanvasSize.Width, (float)canvasView.CanvasSize.Height));
+           
         }
 
 
@@ -30,21 +30,20 @@ namespace XamarinGames.Views
             try
             {
                 Accelerometer.Start(SensorSpeed.Default);
+
                 GameLoop();
             }
-            catch
+            catch (Exception ex)
             {
                 Label label = new Label
                 {
-                    Text = "Sorry, an accelerometer is not available on this device",
+                    Text = $"{ex.Message}Sorry, an accelerometer is not available on this device",
                     FontSize = 24,
                     TextColor = Color.White,
                     BackgroundColor = Color.DarkGray,
                     HorizontalTextAlignment = TextAlignment.Center,
                     Margin = new Thickness(48, 0)
                 };
-
-
             }
         }
 
@@ -61,7 +60,16 @@ namespace XamarinGames.Views
             {
                 canvasView.InvalidateSurface();
                 await Task.Delay(TimeSpan.FromSeconds(1.0 / 30));
-                engine.MoveObjects();
+
+                if (engine == null)
+                {
+                    if (canvasView.CanvasSize.Width > 0)
+                        engine = new GyroBallEngine(new Vector2((float)canvasView.CanvasSize.Width, (float)canvasView.CanvasSize.Height));
+                }
+                else
+                {
+                    engine.MoveObjects();
+                }
             }
         }
         void OnCanvasViewPaintSurface(object sender, SKPaintSurfaceEventArgs args)
@@ -71,11 +79,15 @@ namespace XamarinGames.Views
             SKCanvas canvas = surface.Canvas;
 
             canvas.Clear();
-            canvas.DrawOval(engine.PlayerBall.Position.X, engine.PlayerBall.Position.Y, engine.PlayerBall.Radius, engine.PlayerBall.Radius, engine.PlayerBall.Paint);
 
-            foreach (Ball ball in engine.DeadlyBalls)
-            {
-                canvas.DrawOval(ball.Position.X, ball.Position.Y, ball.Radius, ball.Radius, ball.Paint);
+            if (engine != null)
+            {                
+                canvas.DrawOval(engine.PlayerBall.Position.X, engine.PlayerBall.Position.Y, engine.PlayerBall.Radius, engine.PlayerBall.Radius, engine.PlayerBall.Paint);
+
+                foreach (Ball ball in engine.DeadlyBalls)
+                {
+                    canvas.DrawOval(ball.Position.X, ball.Position.Y, ball.Radius, ball.Radius, ball.Paint);
+                }
             }
         }
     }
