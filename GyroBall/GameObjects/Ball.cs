@@ -6,6 +6,7 @@ namespace GyroBall.GameObjects
     public class Ball
     {
         public int Id { get; set; }
+        public int Speed { get; set; }
         public SKPaint Paint { get; set; }
         public Vector2 Position { get; set; }
         public float Radius { get; set; }
@@ -40,6 +41,7 @@ namespace GyroBall.GameObjects
                 Color = color,
                 StrokeWidth = 1
             };
+            Speed = 100;
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using SkiaSharp;
+using System;
 using System.Numerics;
 
 namespace GyroBall.GameObjects
@@ -17,6 +18,8 @@ namespace GyroBall.GameObjects
         private void InitDirection()
         {
             Direction = new Vector2(1, 1);
+            var rand = new Random();
+            Speed = rand.Next(10,50);
         }
 
     }

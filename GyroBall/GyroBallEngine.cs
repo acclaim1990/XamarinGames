@@ -1,5 +1,6 @@
 ﻿using GyroBall.GameObjects;
 using SkiaSharp;
+using System;
 using System.Collections.Generic;
 using System.Numerics;
 using Xamarin.Essentials;
@@ -13,11 +14,17 @@ namespace GyroBall
         public Vector2 ViewSize { get; set; }
 
         private Vector3 acceleration;
+        private double NextLevel { get; set; }
+        private int Level { get; set; }
+        private DateTime LevelTimeChanged { get; set; }
 
 
         public GyroBallEngine(Vector2 viewSize)
         {
             ViewSize = viewSize;
+            LevelTimeChanged = DateTime.Now;
+            NextLevel = 10;
+            Level = 1;
 
             Accelerometer.ReadingChanged += (sender, args) =>
             {
@@ -28,16 +35,30 @@ namespace GyroBall
             PlayerBall = new Ball(200, 200, 50);
             DeadlyBalls = new List<DeadlyBall>();
             DeadlyBalls.Add(new DeadlyBall(100, 300, 20, SKColors.Red));
-            DeadlyBalls.Add(new DeadlyBall(200, 300, 20, SKColors.Purple));
-            DeadlyBalls.Add(new DeadlyBall(300, 300, 20, SKColors.Plum));
-            DeadlyBalls.Add(new DeadlyBall(400, 300, 20, SKColors.Yellow));
-            DeadlyBalls.Add(new DeadlyBall(500, 300, 20, SKColors.Green));
-            DeadlyBalls.Add(new DeadlyBall(600, 300, 20, SKColors.Honeydew));
-            DeadlyBalls.Add(new DeadlyBall(700, 300, 20, SKColors.Orange));
-            DeadlyBalls.Add(new DeadlyBall(800, 300, 20, SKColors.Teal));
         }
 
-        public void MoveObjects()
+        public void MainEngineLoop()
+        {
+            CheckLevel();
+            MoveObjects();
+        }
+
+        private void CheckLevel()
+        {
+            if (DateTime.Now > LevelTimeChanged.AddSeconds(NextLevel))
+            {
+                LevelTimeChanged = DateTime.Now;
+                AddLevel();
+            }
+        }
+
+        private void AddLevel()
+        {
+            Level++;
+            DeadlyBalls.Add(new DeadlyBall(100, 300, 20, SKColors.Red));
+        }
+
+        private void MoveObjects()
         {
             MoveBall();
             MoveDeadlyBalls();
@@ -45,7 +66,7 @@ namespace GyroBall
 
         private void MoveBall()
         {
-            PlayerBall.Position += new Vector2(-acceleration.X, acceleration.Y) * 100;
+            PlayerBall.Position += new Vector2(-acceleration.X, acceleration.Y) * PlayerBall.Speed;
 
             if (PlayerBall.Position.X <= PlayerBall.Radius)
             {
@@ -72,7 +93,7 @@ namespace GyroBall
         {
             foreach (DeadlyBall ball in DeadlyBalls)
             {
-                ball.Position += ball.Direction * 100;
+                ball.Position += ball.Direction * ball.Speed;
 
                 if (ball.Position.X <= ball.Radius)
                 {

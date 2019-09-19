@@ -19,7 +19,7 @@ namespace XamarinGames.Views
         public GyroBallPage()
         {
             InitializeComponent();
-           
+
         }
 
 
@@ -68,7 +68,7 @@ namespace XamarinGames.Views
                 }
                 else
                 {
-                    engine.MoveObjects();
+                    engine.MainEngineLoop();
                 }
             }
         }
@@ -81,7 +81,7 @@ namespace XamarinGames.Views
             canvas.Clear();
 
             if (engine != null)
-            {                
+            {
                 canvas.DrawOval(engine.PlayerBall.Position.X, engine.PlayerBall.Position.Y, engine.PlayerBall.Radius, engine.PlayerBall.Radius, engine.PlayerBall.Paint);
 
                 foreach (Ball ball in engine.DeadlyBalls)
