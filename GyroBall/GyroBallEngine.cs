@@ -15,7 +15,7 @@ namespace GyroBall
 
         private Vector3 acceleration;
         private double NextLevel { get; set; }
-        private int Level { get; set; }
+        public int Level { get; private set; }
         private DateTime LevelTimeChanged { get; set; }
 
 

@@ -8,17 +8,23 @@ using System.Threading.Tasks;
 using Xamarin.Essentials;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
+using XamarinGames.ViewModels;
 
 namespace XamarinGames.Views
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class GyroBallPage : ContentPage
     {
-        GyroBallEngine engine;
+
+        GyroBallViewModel viewModel;
+
+
         bool pageIsActive;
         public GyroBallPage()
         {
             InitializeComponent();
+
+            BindingContext = viewModel = new GyroBallViewModel();
 
         }
 
@@ -61,14 +67,14 @@ namespace XamarinGames.Views
                 canvasView.InvalidateSurface();
                 await Task.Delay(TimeSpan.FromSeconds(1.0 / 30));
 
-                if (engine == null)
+                if (viewModel.Engine == null)
                 {
                     if (canvasView.CanvasSize.Width > 0)
-                        engine = new GyroBallEngine(new Vector2((float)canvasView.CanvasSize.Width, (float)canvasView.CanvasSize.Height));
+                        viewModel.Engine = new GyroBallEngine(new Vector2((float)canvasView.CanvasSize.Width, (float)canvasView.CanvasSize.Height));
                 }
                 else
                 {
-                    engine.MainEngineLoop();
+                    viewModel.Engine.MainEngineLoop();
                 }
             }
         }
@@ -80,11 +86,11 @@ namespace XamarinGames.Views
 
             canvas.Clear();
 
-            if (engine != null)
+            if (viewModel.Engine != null)
             {
-                canvas.DrawOval(engine.PlayerBall.Position.X, engine.PlayerBall.Position.Y, engine.PlayerBall.Radius, engine.PlayerBall.Radius, engine.PlayerBall.Paint);
+                canvas.DrawOval(viewModel.Engine.PlayerBall.Position.X, viewModel.Engine.PlayerBall.Position.Y, viewModel.Engine.PlayerBall.Radius, viewModel.Engine.PlayerBall.Radius, viewModel.Engine.PlayerBall.Paint);
 
-                foreach (Ball ball in engine.DeadlyBalls)
+                foreach (Ball ball in viewModel.Engine.DeadlyBalls)
                 {
                     canvas.DrawOval(ball.Position.X, ball.Position.Y, ball.Radius, ball.Radius, ball.Paint);
                 }
