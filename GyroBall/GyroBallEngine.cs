@@ -1,15 +1,14 @@
-﻿using GyroBall.GameObjects;
+﻿using Base;
+using GyroBall.GameObjects;
 using SkiaSharp;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Numerics;
-using System.Runtime.CompilerServices;
 using Xamarin.Essentials;
 
 namespace GyroBall
 {
-    public class GyroBallEngine : INotifyPropertyChanged
+    public class GyroBallEngine : BaseEngine
     {
         public Ball PlayerBall;
         public List<DeadlyBall> DeadlyBalls;
@@ -71,7 +70,7 @@ namespace GyroBall
         private void AddLevel()
         {
             Level++;
-            DeadlyBalls.Add(new DeadlyBall(100, 300, 20, SKColors.Red,Level));
+            DeadlyBalls.Add(new DeadlyBall(100, 300, 20, SKColors.Red, Level));
         }
 
         private void MoveObjects()
@@ -150,31 +149,5 @@ namespace GyroBall
             }
             return false;
         }
-
-
-        protected bool SetProperty<T>(ref T backingStore, T value,
-            [CallerMemberName]string propertyName = "",
-            Action onChanged = null)
-        {
-            if (EqualityComparer<T>.Default.Equals(backingStore, value))
-                return false;
-
-            backingStore = value;
-            onChanged?.Invoke();
-            OnPropertyChanged(propertyName);
-            return true;
-        }
-
-        #region INotifyPropertyChanged
-        public event PropertyChangedEventHandler PropertyChanged;
-        protected void OnPropertyChanged([CallerMemberName] string propertyName = "")
-        {
-            var changed = PropertyChanged;
-            if (changed == null)
-                return;
-
-            changed.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-        #endregion
     }
 }
