@@ -12,7 +12,7 @@ namespace XamarinGames
             InitializeComponent();
 
             DependencyService.Register<MockDataStore>();
-            MainPage = new GyroBallPage();
+            MainPage = new NavigationPage(new GameSelectPage());
         }
 
         protected override void OnStart()
