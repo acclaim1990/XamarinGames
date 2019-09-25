@@ -2,12 +2,14 @@
 using SkiaSharp;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Numerics;
+using System.Runtime.CompilerServices;
 using Xamarin.Essentials;
 
 namespace GyroBall
 {
-    public class GyroBallEngine
+    public class GyroBallEngine : INotifyPropertyChanged
     {
         public Ball PlayerBall;
         public List<DeadlyBall> DeadlyBalls;
@@ -15,16 +17,26 @@ namespace GyroBall
 
         private Vector3 acceleration;
         private double NextLevel { get; set; }
-        public int Level { get; private set; }
+        public bool Dead { get; set; }
+
+        private int level;
+
+        public int Level
+        {
+            get { return level; }
+            set { SetProperty(ref level, value); }
+        }
+
         private DateTime LevelTimeChanged { get; set; }
 
 
-        public GyroBallEngine(Vector2 viewSize)
+        public GyroBallEngine(Vector2 viewSize) : base()
         {
             ViewSize = viewSize;
             LevelTimeChanged = DateTime.Now;
             NextLevel = 10;
-            Level = 1;
+            Level = 0;
+            Dead = false;
 
             Accelerometer.ReadingChanged += (sender, args) =>
             {
@@ -34,13 +46,17 @@ namespace GyroBall
 
             PlayerBall = new Ball(200, 200, 50);
             DeadlyBalls = new List<DeadlyBall>();
-            DeadlyBalls.Add(new DeadlyBall(100, 300, 20, SKColors.Red));
+            AddLevel();
         }
 
         public void MainEngineLoop()
         {
             CheckLevel();
             MoveObjects();
+
+            if (CheckDeadlyBallCollision())
+                Dead = true;
+
         }
 
         private void CheckLevel()
@@ -55,7 +71,7 @@ namespace GyroBall
         private void AddLevel()
         {
             Level++;
-            DeadlyBalls.Add(new DeadlyBall(100, 300, 20, SKColors.Red));
+            DeadlyBalls.Add(new DeadlyBall(100, 300, 20, SKColors.Red,Level));
         }
 
         private void MoveObjects()
@@ -120,5 +136,45 @@ namespace GyroBall
                 }
             }
         }
+
+        private bool CheckDeadlyBallCollision()
+        {
+            foreach (DeadlyBall ball in DeadlyBalls)
+            {
+                var radius = PlayerBall.Radius + ball.Radius;
+                var deltaX = PlayerBall.Position.X - ball.Position.X;
+                var deltaY = PlayerBall.Position.Y - ball.Position.Y;
+
+                if (deltaX * deltaX + deltaY * deltaY <= radius * radius)
+                    return true;
+            }
+            return false;
+        }
+
+
+        protected bool SetProperty<T>(ref T backingStore, T value,
+            [CallerMemberName]string propertyName = "",
+            Action onChanged = null)
+        {
+            if (EqualityComparer<T>.Default.Equals(backingStore, value))
+                return false;
+
+            backingStore = value;
+            onChanged?.Invoke();
+            OnPropertyChanged(propertyName);
+            return true;
+        }
+
+        #region INotifyPropertyChanged
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected void OnPropertyChanged([CallerMemberName] string propertyName = "")
+        {
+            var changed = PropertyChanged;
+            if (changed == null)
+                return;
+
+            changed.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+        #endregion
     }
 }

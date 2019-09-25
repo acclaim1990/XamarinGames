@@ -41,7 +41,7 @@ namespace GyroBall.GameObjects
                 Color = color,
                 StrokeWidth = 1
             };
-            Speed = 100;
+            Speed = 150;
         }
     }
 }

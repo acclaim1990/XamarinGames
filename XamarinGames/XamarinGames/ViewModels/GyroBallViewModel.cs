@@ -2,20 +2,12 @@
 
 namespace XamarinGames.ViewModels
 {
-    public class GyroBallViewModel : BaseViewModel
+    public class GyroBallViewModel
     {
-        public int Level
-        {
-            get => Engine.Level;
-        }
-
         public GyroBallEngine Engine;
-
         public GyroBallViewModel()
         {
-            Title = "Gyro Ball";
-
+            // Title = "Gyro Ball";
         }
-
     }
 }

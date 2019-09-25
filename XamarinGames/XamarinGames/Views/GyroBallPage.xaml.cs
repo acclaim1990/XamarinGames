@@ -74,10 +74,23 @@ namespace XamarinGames.Views
                 }
                 else
                 {
-                    viewModel.Engine.MainEngineLoop();
+                    if (!viewModel.Engine.Dead)
+                        viewModel.Engine.MainEngineLoop();
+                    else
+                    {
+                        if (await DisplayAlert("Restart?", "Would you like to play a game", "Yes", "No"))
+                        {
+                            viewModel.Engine = new GyroBallEngine(new Vector2((float)canvasView.CanvasSize.Width, (float)canvasView.CanvasSize.Height));
+                        }
+                        else
+                        {
+
+                        }
+                    }
                 }
             }
         }
+
         void OnCanvasViewPaintSurface(object sender, SKPaintSurfaceEventArgs args)
         {
             SKImageInfo info = args.Info;
