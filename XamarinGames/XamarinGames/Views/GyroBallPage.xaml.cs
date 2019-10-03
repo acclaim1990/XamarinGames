@@ -25,7 +25,6 @@ namespace XamarinGames.Views
             InitializeComponent();
 
             BindingContext = viewModel = new GyroBallViewModel();
-
         }
 
 
@@ -35,6 +34,9 @@ namespace XamarinGames.Views
             pageIsActive = true;
             try
             {
+
+                Intro();
+
                 Accelerometer.Start(SensorSpeed.Default);
 
                 GameLoop();
@@ -59,6 +61,11 @@ namespace XamarinGames.Views
             pageIsActive = false;
             Accelerometer.Stop();
         }
+
+        private async void Intro()
+        {
+            await DisplayAlert($"Game using the gyroscope.", "Move your phone to move the ball!", "Ok");
+        }
         async Task GameLoop()
         {
 
@@ -78,13 +85,13 @@ namespace XamarinGames.Views
                         viewModel.Engine.MainEngineLoop();
                     else
                     {
-                        if (await DisplayAlert("Restart?", "Would you like to play a game", "Yes", "No"))
+                        if (await DisplayAlert($"You reached level {viewModel.Engine.Level}! {Environment.NewLine} Restart?", "Would you like to play again?", "Yes", "No"))
                         {
                             viewModel.Engine = new GyroBallEngine(new Vector2((float)canvasView.CanvasSize.Width, (float)canvasView.CanvasSize.Height));
                         }
                         else
                         {
-
+                            await Navigation.PopAsync();
                         }
                     }
                 }
