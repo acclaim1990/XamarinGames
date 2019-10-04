@@ -2,7 +2,7 @@
 using System;
 using System.Numerics;
 
-namespace GyroBall.GameObjects
+namespace Base.Objects
 {
     public class DeadlyBall : Ball
     {
@@ -35,6 +35,5 @@ namespace GyroBall.GameObjects
                 Speed = rand.Next((1 + level / 20) * 10, (1 + level / 30) * 20);
             }
         }
-
     }
 }

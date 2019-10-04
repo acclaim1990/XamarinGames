@@ -1,7 +1,7 @@
 ﻿using SkiaSharp;
 using System.Numerics;
 
-namespace GestureBall.GameObjects
+namespace Base.Objects
 {
     public class Ball
     {
