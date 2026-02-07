@@ -13,7 +13,7 @@ namespace Base.Objects
         public float Radius { get; set; }
 
         /// <summary>
-        /// Gets a color based on the current date where R = year, G = month, B = day
+        /// Gets a color based on the current date where R = year % 256, G = month, B = day
         /// </summary>
         public static SKColor GetDateBasedColor()
         {
